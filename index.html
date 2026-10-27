@@ -57,13 +57,14 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+      transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.85s ease-in-out;
       cursor: pointer;
       padding: 15px;
+      perspective: 1000px;
     }
 
     #envelope-screen.hidden {
-      transform: translateY(-100%);
+      transform: scale(1.6);
       opacity: 0;
       pointer-events: none;
     }
@@ -73,23 +74,41 @@
       width: 100%;
       max-width: 380px;
       text-align: center;
-      transition: transform 0.4s ease;
+      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      transform-style: preserve-3d;
+      background: transparent;
+      padding: 0;
+      margin: 0;
     }
 
     .envelope-img {
       width: 100%;
       height: auto;
-      border-radius: 8px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      border: none;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      display: block;
+      filter: drop-shadow(0 20px 30px rgba(61, 53, 46, 0.35));
+      transition: filter 0.4s ease, transform 0.4s ease;
+    }
+
+    .envelope-container:hover {
+      transform: translateY(-8px) scale(1.02);
+    }
+
+    .envelope-container:hover .envelope-img {
+      filter: drop-shadow(0 30px 40px rgba(61, 53, 46, 0.45));
     }
 
     .click-hint {
-      margin-top: 15px;
+      margin-top: -30px;
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       letter-spacing: 2px;
       color: var(--gold-dark);
       text-transform: uppercase;
+      font-weight: 600;
       animation: pulse 2s infinite;
     }
 
@@ -108,6 +127,19 @@
       padding-bottom: 30px;
     }
 
+    /* ANIMATIONS DE SCROLL */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+      will-change: opacity, transform;
+    }
+
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* SECTION 1: LA CARTE D'INVITATION (CADRE.PNG) */
     .card-section {
       position: relative;
@@ -116,7 +148,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 30px 15px;
+      padding: 35px 15px;
       background: url('cadre.png') center center / contain no-repeat;
     }
 
@@ -160,8 +192,28 @@
       width: 100%;
     }
 
+    /* Style de base des éléments animés (masqués au départ) */
+    .animated-item {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .card-section.active .animated-item {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Décalages temporels (apparition l'un après l'autre) */
+    .card-section.active .animated-item:nth-child(1) { transition-delay: 0.2s; } /* Médaillon */
+    .card-section.active .animated-item:nth-child(2) { transition-delay: 0.5s; } /* Famille */
+    .card-section.active .animated-item:nth-child(3) { transition-delay: 0.8s; } /* Phrase principale */
+    .card-section.active .animated-item:nth-child(4) { transition-delay: 1.1s; } /* Séparateur */
+    .card-section.active .animated-item:nth-child(5) { transition-delay: 1.4s; } /* Détails */
+    .card-section.active .animated-item:nth-child(6) { transition-delay: 1.7s; } /* Boutons nav */
+
     .invitation-subhead {
-      font-size: 1rem;
+      font-size: 0.8rem;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--gold-dark);
@@ -170,7 +222,7 @@
     }
 
     .invitation-main-phrase {
-      font-size: 1.15rem;
+      font-size: 0.6rem;
       font-style: italic;
       line-height: 1.4;
       color: #4A4238;
@@ -185,9 +237,21 @@
     }
 
     .invitation-detail {
-      font-size: 0.98rem;
+      font-size: 0.78rem;
       color: #6E6359;
       line-height: 1.4;
+    }
+
+    .animate-on-scroll.visible .invitation-subhead,
+    .animate-on-scroll.visible .invitation-main-phrase,
+    .animate-on-scroll.visible .invitation-detail {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .animate-on-scroll.visible .invitation-divider {
+      opacity: 1;
+      transform: scaleX(1);
     }
 
     .nav-buttons {
@@ -230,14 +294,60 @@
       color: white;
     }
 
-    /* SECTION 2: CALENDRIER & HORAIRES (ESPACEMENT OPTIMISÉ) */
+    /* 📜 SECTION POÈME AVEC BACKGROUND POEME.PNG */
+    .poem-section {
+      width: 80%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 45px 20px;
+      background: url('poeme.png') center center / cover no-repeat;
+      border-top: 1px solid rgba(197, 160, 89, 0.2);
+    }
+
+    .poem-card {
+      text-align: center;
+      max-width: 340px;
+      padding: 20px 22px;
+      
+    }
+
+    .poem-card i.fa-quote-left {
+      font-size: 1.4rem;
+      color: var(--gold-light);
+      margin-bottom: 10px;
+      display: block;
+      opacity: 0.85;
+    }
+
+    .poem-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: #5A5047;
+      line-height: 1.6;
+      letter-spacing: 0.3px;
+    }
+
+    .poem-author {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-top: 14px;
+      font-weight: 600;
+    }
+
+    /* SECTION 2: CALENDRIER & HORAIRES */
     .calendar-section {
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 25px 15px; /* Padding réduit */
+      padding: 30px 15px;
       background-color: var(--card-bg);
       border-top: 1px solid rgba(197, 160, 89, 0.2);
     }
@@ -246,7 +356,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.7rem;
       color: var(--gold-dark);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       text-align: center;
       letter-spacing: 2px;
     }
@@ -302,7 +412,6 @@
       position: relative;
     }
 
-    /* CŒUR DORÉ SUR LE 19 */
     .cal-day.event-day {
       color: var(--gold-dark);
       font-weight: 600;
@@ -350,7 +459,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 25px 15px;
+      padding: 30px 15px;
       background-color: var(--bg-color);
       border-top: 1px solid rgba(197, 160, 89, 0.2);
     }
@@ -363,7 +472,7 @@
       max-width: 330px;
       text-align: center;
       box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -385,14 +494,15 @@
 
     .welcome-message {
       text-align: center;
-      padding: 20px 15px;
-      background: rgba(255, 255, 255, 0.6);
+      padding: 22px 18px;
+      background: rgba(255, 255, 255, 0.7);
       border-radius: 16px;
-      border: 1px solid rgba(197, 160, 89, 0.3);
+      border: 1px solid rgba(197, 160, 89, 0.35);
       width: 100%;
       max-width: 330px;
       position: relative;
       box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      margin-bottom: 20px;
     }
 
     .welcome-ornament-top {
@@ -424,9 +534,75 @@
       line-height: 1.35;
     }
 
+    /* ⏳ COMPTE À REBOURS ÉLÉGANT & DÉCORÉ */
+    .countdown-card {
+      width: 100%;
+      max-width: 330px;
+      background: rgba(249, 246, 240, 0.95);
+      border: 1px solid var(--gold-light);
+      border-radius: 16px;
+      padding: 18px 15px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .countdown-title-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .countdown-line {
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+    }
+
+    .countdown-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gold-dark);
+      font-weight: 600;
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .countdown-box {
+      background: #EAE5DC;
+      border-radius: 10px;
+      padding: 10px 4px;
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.02);
+    }
+
+    .countdown-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.65rem;
+      font-weight: 600;
+      color: var(--gold-dark);
+      line-height: 1;
+    }
+
+    .countdown-label {
+      font-size: 0.65rem;
+      color: #8C8075;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
     /* SECTION INTERDICTION PHOTO */
     .no-photos-card {
-      margin-top: 15px;
       padding: 14px 18px;
       background: rgba(249, 246, 240, 0.9);
       border: 1px dashed var(--gold-light);
@@ -456,7 +632,7 @@
       text-transform: uppercase;
     }
 
-    /* VERSION NATIVE PC (Conserve l'espacement aéré sur grand écran) */
+    /* VERSION NATIVE PC */
     @media (min-width: 768px) {
       .card-section, .calendar-section, .location-section {
         min-height: 100vh;
@@ -465,7 +641,10 @@
       .circle-wrapper { width: 150px; height: 150px; }
       .couple-names { font-size: 1.6rem; }
       .invitation-main-phrase { font-size: 1.35rem; }
-      .calendar-card, .location-card, .welcome-message, .no-photos-card { max-width: 360px; }
+      .poem-card { max-width: 400px; }
+      .poem-text { font-size: 1.35rem; }
+      .calendar-card, .location-card, .welcome-message, .countdown-card, .no-photos-card { max-width: 360px; }
+      .countdown-number { font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -484,23 +663,23 @@
 
     <!-- PAGE 1: LA CARTE D'INVITATION -->
     <section class="card-section" id="card">
-      <div class="circle-wrapper">
+      <div class="circle-wrapper animated-item">
         <img src="cercle.png" alt="Médaillon doré" class="circle-img">
         <div class="couple-names">Sarah<br>&amp;<br>Yacine</div>
       </div>
 
       <!-- TEXTE D'INVITATION -->
       <div class="invitation-text">
-        <div class="invitation-subhead">La Famille SAHRAOUI</div>
-        <div class="invitation-main-phrase">Ont la joie de vous convoquer à l'union de leurs destinées</div>
-        <div class="invitation-divider"></div>
-        <div class="invitation-detail">
+        <div class="invitation-subhead animated-item">La Famille SAHRAOUI</div>
+        <div class="invitation-main-phrase animated-item">Ont la joie de vous convoquer à l'union de leurs destinées</div>
+        <div class="invitation-divider animated-item"></div>
+        <div class="invitation-detail animated-item">
           Et seraient honorés de votre présence<br>
           pour célébrer ce jour d'exception.
         </div>
       </div>
 
-      <div class="nav-buttons">
+      <div class="nav-buttons animated-item">
         <a href="#calendar" class="nav-btn">
           <i class="fa-regular fa-calendar-days"></i> Date &amp; Horaire
         </a>
@@ -510,11 +689,23 @@
       </div>
     </section>
 
+    <!-- SECTION INTERMÉDIAIRE : POÈME & CITATION AVEC FOND POEME.PNG -->
+    <section class="poem-section">
+      <div class="poem-card animate-on-scroll">
+        <i class="fa-solid fa-quote-left"></i>
+        <p class="poem-text">
+          « Deux âmes mais un seul cœur,<br>
+          deux vies partagées, un seul bonheur. »
+        </p>
+        <div class="poem-author">— Antoine de Saint-Exupéry</div>
+      </div>
+    </section>
+
     <!-- PAGE 2: CALENDRIER & HORAIRE -->
     <section class="calendar-section" id="calendar">
-      <h2 class="section-title">Date &amp; Horaire</h2>
+      <h2 class="section-title animate-on-scroll">Date &amp; Horaire</h2>
 
-      <div class="calendar-card">
+      <div class="calendar-card animate-on-scroll">
         <div class="cal-header">
           <span class="cal-month">Déc.</span>
           <span class="cal-year">2026</span>
@@ -543,21 +734,21 @@
         </div>
       </div>
 
-      <div class="time-details">
+      <div class="time-details animate-on-scroll">
         <h3>Samedi 19 Décembre 2026</h3>
         <p>À partir de 16h00</p>
       </div>
 
-      <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Mariage+Sarah+et+Yacine&dates=20261219T160000/20261219T230000" target="_blank" class="nav-btn">
+      <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Mariage+Sarah+et+Yacine&dates=20261219T160000/20261219T230000" target="_blank" class="nav-btn animate-on-scroll">
         <i class="fa-solid fa-calendar-plus"></i> Ajouter à Google Agenda
       </a>
     </section>
 
-    <!-- PAGE 3: LIEU, MESSAGE DE BIENVENUE ET RESTRICTION PHOTO -->
+    <!-- PAGE 3: LIEU, MESSAGE DE BIENVENUE, COMPTE À REBOURS ET RESTRICTION PHOTO -->
     <section class="location-section" id="location">
-      <h2 class="section-title">Lieu de la cérémonie</h2>
+      <h2 class="section-title animate-on-scroll">Lieu de la cérémonie</h2>
 
-      <div class="location-card">
+      <div class="location-card animate-on-scroll">
         <div class="venue-name">Salle des Fêtes Les Roses</div>
         <div class="venue-address">
           123 Avenue des Fleurs,<br>
@@ -569,15 +760,43 @@
         </a>
       </div>
 
-      <div class="welcome-message">
+      <!-- MESSAGE DE BIENVENUE -->
+      <div class="welcome-message animate-on-scroll">
         <div class="welcome-ornament-top"></div>
         <h2>Soyez les bienvenus</h2>
         <p>Nous avons hâte de partager ce moment inoubliable avec vous.</p>
         <div class="welcome-ornament-bottom"></div>
       </div>
 
+      <!-- ⏳ COMPTE À REBOURS DYNAMIQUE & DÉCORÉ -->
+      <div class="countdown-card animate-on-scroll">
+        <div class="countdown-title-wrapper">
+          <div class="countdown-line"></div>
+          <div class="countdown-title">Le Grand Jour Dans</div>
+          <div class="countdown-line"></div>
+        </div>
+        <div class="countdown-grid">
+          <div class="countdown-box">
+            <div id="days" class="countdown-number">00</div>
+            <div class="countdown-label">Jours</div>
+          </div>
+          <div class="countdown-box">
+            <div id="hours" class="countdown-number">00</div>
+            <div class="countdown-label">Heures</div>
+          </div>
+          <div class="countdown-box">
+            <div id="minutes" class="countdown-number">00</div>
+            <div class="countdown-label">Min</div>
+          </div>
+          <div class="countdown-box">
+            <div id="seconds" class="countdown-number">00</div>
+            <div class="countdown-label">Sec</div>
+          </div>
+        </div>
+      </div>
+
       <!-- RESTRICTION PHOTO -->
-      <div class="no-photos-card">
+      <div class="no-photos-card animate-on-scroll">
         <img src="pas-de-photos.png" alt="Interdiction de photos" class="no-photos-img">
         <div class="no-photos-text">Prière de ne pas prendre de photos</div>
       </div>
@@ -586,10 +805,65 @@
   </div>
 
   <script>
+    // Ouverture enveloppe
     function openEnvelope() {
       const envelopeScreen = document.getElementById('envelope-screen');
+      const cardSection = document.getElementById('card');
+      
       envelopeScreen.classList.add('hidden');
+      
+      // Déclenche l'animation progressive du texte après l'ouverture de l'enveloppe
+      setTimeout(() => {
+        cardSection.classList.add('active');
+      }, 300);
     }
+
+    // Logic du compte à rebours (Cible: 19 Décembre 2026 à 16:00:00)
+    const targetDate = new Date("December 19, 2026 16:00:00").getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        document.getElementById('days').innerText = "00";
+        document.getElementById('hours').innerText = "00";
+        document.getElementById('minutes').innerText = "00";
+        document.getElementById('seconds').innerText = "00";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('days').innerText = days < 10 ? '0' + days : days;
+      document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
+      document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+      document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // IntersectionObserver pour déclencher les animations au défilement
+    function triggerScrollAnimations() {
+      const animatedElements = document.querySelectorAll('.animate-on-scroll');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.15 });
+
+      animatedElements.forEach((el) => observer.observe(el));
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      triggerScrollAnimations();
+    });
   </script>
 </body>
 </html>
