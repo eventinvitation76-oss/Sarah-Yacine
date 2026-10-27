@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invitation Digitale de Mariage</title>
+  <!-- Font Awesome pour les icônes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Fonts Google Elegant -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #EFECE6;
+      --card-bg: #F9F6F0;
+      --taupe: #B8A898;
+      --gold-dark: #9E7B3B;
+      --gold-light: #C5A059;
+      --text-main: #3D352E;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ÉCRAN 1 : ENVELOPPE D'OUVERTURE */
+    #envelope-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+      cursor: pointer;
+    }
+
+    #envelope-screen.hidden {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .envelope-container {
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      transition: transform 0.4s ease;
+    }
+
+    .envelope-container:hover {
+      transform: scale(1.02);
+    }
+
+    .envelope-img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+
+    .click-hint {
+      margin-top: -38px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      color: var(--gold-dark);
+      text-transform: uppercase;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-5px); }
+    }
+
+    /* INVITATION CONTAINER PRINCIPAL */
+    .invitation-container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 50px;
+    }
+
+    /* SECTION 1: LA CARTE D'INVITATION (CADRE.PNG) */
+    .card-section {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      background: url('cadre.png') center/contain no-repeat;
+    }
+
+    .circle-wrapper {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin-top: -50px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .circle-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .couple-names {
+      position: relative;
+      z-index: 2;
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.6rem;
+      color: var(--gold-dark);
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* ✨ NOUVEAU TEXTE D'INVITATION SUBLIMÉ */
+    .invitation-text {
+      font-family: 'Cormorant Garamond', serif;
+      text-align: center;
+      margin: 10px 0 20px 0;
+      padding: 0 45px;
+    }
+
+    .invitation-subhead {
+      font-size: 1rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .invitation-main-phrase {
+      font-size: 0.8rem;
+      font-style: italic;
+      line-height: 1.5;
+      color: #4A4238;
+      margin-bottom: 6px;
+    }
+
+    .invitation-divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+      margin: 12px auto;
+    }
+
+    .invitation-detail {
+      font-size: 1rem;
+      color: #6E6359;
+      line-height: 1.6;
+    }
+
+    .nav-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 80%;
+      max-width: 280px;
+      margin-top: 15px;
+    }
+
+    .nav-btn {
+      padding: 12px 20px;
+      border: 1px solid var(--gold-light);
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--gold-dark);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .nav-btn:hover {
+      background: var(--gold-light);
+      color: white;
+    }
+
+    /* SECTION 2: CALENDRIER & HORAIRES */
+    .calendar-section {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      background-color: var(--card-bg);
+      border-top: 1px solid rgba(197, 160, 89, 0.2);
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      color: var(--gold-dark);
+      margin-bottom: 25px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .calendar-card {
+      background: #EAE5DC;
+      border-radius: 12px;
+      padding: 25px 15px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+    }
+
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 20px;
+      padding: 0 10px;
+    }
+
+    .cal-month {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      color: #6E6359;
+    }
+
+    .cal-year {
+      font-size: 1.1rem;
+      color: #8C8075;
+      letter-spacing: 2px;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      text-align: center;
+    }
+
+    .cal-day-name {
+      font-size: 0.7rem;
+      color: #8C8075;
+      text-transform: lowercase;
+      margin-bottom: 8px;
+    }
+
+    .cal-day {
+      font-size: 0.9rem;
+      color: #5A5047;
+      padding: 6px 0;
+      position: relative;
+    }
+
+    /* ❤️ CŒUR DORÉ UNIQUEMENT SUR LA DATE DU 19 */
+    .cal-day.event-day {
+      color: var(--gold-dark);
+      font-weight: 600;
+    }
+
+    .cal-day.event-day::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 88 C20 60, 5 40, 20 20 C32 5, 48 18, 50 30 C52 18, 68 5, 80 20 C95 40, 80 60, 50 88 Z' fill='none' stroke='%23C5A059' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
+      pointer-events: none;
+      animation: heartPulse 2.5s infinite ease-in-out;
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.12); }
+    }
+
+    .time-details {
+      text-align: center;
+      margin-bottom: 25px;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .time-details h3 {
+      font-size: 1.4rem;
+      color: var(--gold-dark);
+      margin-bottom: 8px;
+    }
+
+    .time-details p {
+      font-size: 1.1rem;
+      color: #6E6359;
+    }
+
+    /* SECTION 3: LIEU DE LA CÉRÉMONIE */
+    .location-section {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      background-color: var(--bg-color);
+      border-top: 1px solid rgba(197, 160, 89, 0.2);
+    }
+
+    .location-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px 20px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      margin-bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .venue-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      color: var(--gold-dark);
+      margin-bottom: 10px;
+    }
+
+    .venue-address {
+      font-size: 0.95rem;
+      color: #6E6359;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    /* SECTION 4: MESSAGE DE BIENVENUE DÉCORÉ */
+    .welcome-message {
+      text-align: center;
+      padding: 35px 25px;
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      max-width: 380px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    }
+
+    .welcome-ornament-top {
+      width: 120px;
+      height: 24px;
+      margin: 0 auto 15px auto;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40'%3E%3Cpath d='M10 20 Q50 5, 90 20 T170 20' fill='none' stroke='%23C5A059' stroke-width='2'/%3E%3Ccircle cx='100' cy='20' r='4' fill='%239E7B3B'/%3E%3Ccircle cx='70' cy='16' r='2.5' fill='%23C5A059'/%3E%3Ccircle cx='130' cy='16' r='2.5' fill='%23C5A059'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    .welcome-ornament-bottom {
+      width: 120px;
+      height: 24px;
+      margin: 15px auto 0 auto;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40'%3E%3Cpath d='M10 20 Q50 35, 90 20 T170 20' fill='none' stroke='%23C5A059' stroke-width='2'/%3E%3Ccircle cx='100' cy='20' r='4' fill='%239E7B3B'/%3E%3Ccircle cx='70' cy='24' r='2.5' fill='%23C5A059'/%3E%3Ccircle cx='130' cy='24' r='2.5' fill='%23C5A059'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    .welcome-message h2 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3.2rem;
+      color: var(--gold-dark);
+      margin-bottom: 10px;
+      line-height: 1.1;
+    }
+
+    .welcome-message p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      color: #5A5047;
+      letter-spacing: 0.5px;
+      line-height: 1.5;
+    }
+    /* 📷 SECTION INTERDICTION PHOTO (ICÔNE AU-DESSUS & CENTRÉE) */
+    .no-photos-card {
+      margin-top: 25px;
+      padding: 22px 25px;
+      background: rgba(249, 246, 240, 0.9);
+      border: 1px dashed var(--gold-light);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 360px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .no-photos-img {
+      width: 45px; /* Vous pouvez modifier cette taille si vous souhaitez l'agrandir ou la réduire */
+      height: auto;
+      margin-bottom: 10px;
+      object-fit: contain;
+      filter: brightness(0) saturate(100%) invert(53%) sepia(34%) saturate(771%) hue-rotate(5deg) brightness(92%) contrast(89%);
+    }
+
+    .no-photos-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #5A5047;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ÉCRAN 1: L'ENVELOPPE D'OUVERTURE -->
+  <div id="envelope-screen" onclick="openEnvelope()">
+    <div class="envelope-container">
+      <img src="enveloppe.png" alt="Enveloppe d'invitation" class="envelope-img">
+      <div class="click-hint">Cliquez pour ouvrir</div>
+    </div>
+  </div>
+
+  <!-- CONTENU DE L'INVITATION -->
+  <div class="invitation-container">
+
+    <!-- PAGE 1: LA CARTE D'INVITATION -->
+    <section class="card-section" id="card">
+      <div class="circle-wrapper">
+        <img src="cercle.png" alt="Médaillon doré" class="circle-img">
+        <div class="couple-names">Sarah<br>&amp;<br>Yacine</div>
+      </div>
+
+      <!-- TEXTE D'INVITATION SUBLIMÉ -->
+      <div class="invitation-text">
+        <div class="invitation-subhead">Invitation Mariage</div>
+        <div class="invitation-subhead">La Famille SAHRAOUI</div>
+        <div class="invitation-main-phrase">Ont la joie de vous convoquer à l'union de leurs destinées</div>
+        <div class="invitation-divider"></div>
+        <div class="invitation-detail">Et seraient honorés de votre présence 
+          <br>pour célébrer ce jour d'exception.</div>
+      </div>
+
+      <div class="nav-buttons">
+        <a href="#calendar" class="nav-btn">
+          <i class="fa-regular fa-calendar-days"></i> Date &amp; Horaire
+        </a>
+        <a href="#location" class="nav-btn">
+          <i class="fa-solid fa-location-dot"></i> Lieu de la cérémonie
+        </a>
+      </div>
+    </section>
+
+    <!-- PAGE 2: CALENDRIER & HORAIRE -->
+    <section class="calendar-section" id="calendar">
+      <h2 class="section-title">Date &amp; Horaire</h2>
+
+      <div class="calendar-card">
+        <div class="cal-header">
+          <span class="cal-month">Déc.</span>
+          <span class="cal-year">2026</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-day-name">lundi</div>
+          <div class="cal-day-name">mardi</div>
+          <div class="cal-day-name">mercredi</div>
+          <div class="cal-day-name">jeudi</div>
+          <div class="cal-day-name">vendredi</div>
+          <div class="cal-day-name">samedi</div>
+          <div class="cal-day-name">dimanche</div>
+
+          <!-- Jours du mois -->
+          <div class="cal-day"></div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div>
+          <div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div>
+          <div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div>
+          <!-- Cœur uniquement sur le 19 -->
+          <div class="cal-day event-day">19</div>
+          <div class="cal-day">20</div>
+          <div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div>
+          <!-- Le 26 est redevenu normal -->
+          <div class="cal-day">26</div>
+          <div class="cal-day">27</div>
+          <div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div><div class="cal-day">31</div>
+        </div>
+      </div>
+
+      <div class="time-details">
+        <h3>Samedi 19 Décembre 2026</h3>
+        <p>À partir de 16h00</p>
+      </div>
+
+      <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Mariage+Sarah+et+Yacine&dates=20261219T160000/20261219T230000" target="_blank" class="nav-btn">
+        Ajouter à Google Agenda
+      </a>
+    </section>
+
+    <!-- PAGE 3: LIEU ET MESSAGE DE BIENVENUE DÉCORÉ -->
+    <section class="location-section" id="location">
+      <h2 class="section-title">Lieu de la cérémonie</h2>
+
+      <div class="location-card">
+        <div class="venue-name">Salle des Fêtes Les Roses</div>
+        <div class="venue-address">
+          123 Avenue des Fleurs,<br>
+          Alger, Algérie
+        </div>
+
+        <a href="https://maps.google.com" target="_blank" class="nav-btn">
+          Voir la localisation (Google Maps)
+        </a>
+      </div>
+
+      <!-- Message décoré -->
+      <div class="welcome-message">
+        <div class="welcome-ornament-top"></div>
+        <h2>Soyez les bienvenus</h2>
+        <p>Nous avons hâte de partager ce moment inoubliable avec vous.</p>
+        <div class="welcome-ornament-bottom"></div>
+      </div>
+
+      <div class="no-photos-card">
+        <img src="pas-de-photos.png" alt="Interdiction de photos" class="no-photos-img">
+        <div class="no-photos-text">Prière de ne pas prendre de photos</div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script>
+    function openEnvelope() {
+      const envelopeScreen = document.getElementById('envelope-screen');
+      envelopeScreen.classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
